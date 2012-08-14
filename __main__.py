@@ -1,6 +1,6 @@
 #/usr/bin/python
 # encoding: utf-8
-from os import urandom
+from os import urandom,environ
 from flask import Flask,render_template,request,redirect,url_for,flash,get_flashed_messages
 from flask.ext.shelve import get_shelve,init_app
 from pwgen import pwgen
@@ -140,4 +140,6 @@ app.secret_key = urandom(24)
 app.config['SHELVE_FILENAME'] = 'users.db'
 init_app(app)
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    # Bind to PORT if defined, otherwise default to 5000.
+    port = int(environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
