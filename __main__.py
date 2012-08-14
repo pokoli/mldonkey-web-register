@@ -1,3 +1,5 @@
+#/usr/bin/python
+# encoding: utf-8
 from os import urandom
 from flask import Flask,render_template,request,redirect,url_for,flash,get_flashed_messages
 from flask.ext.shelve import get_shelve,init_app
