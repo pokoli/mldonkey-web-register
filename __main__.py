@@ -78,7 +78,6 @@ def new():
     if invalid: 
         return redirect(url_for("new_user"))
     pwd = str(pwgen(10, no_symbols=True))
-    print pwd
     #TODO: Provar la connexió amb MLDonkey
     #with mldonkey.MLDonkey() as ml:
     #    ml.new_user(request.form['username'],request.form['email'],pwd)
@@ -100,7 +99,6 @@ def lost():
         return redirect(url_for("lost_pass"))
     username = db[email]['username']
     pwd = pwgen(10, no_symbols=True)
-    print pwd
     #TODO: Provar la connexió amb MLDonkey
     #with mldonkey.MLDonkey() as ml:
     #    ml.change_pass(username,pwd)
@@ -126,14 +124,12 @@ def change():
         flash(u'Contrasenya anterior incorrecta.','error')    
         return redirect(url_for("change_pass"))
     username = db[email]['username']
-    pwd = str(request.form['password'])
     #TODO: Provar la connexió amb MLDonkey
     #with mldonkey.MLDonkey() as ml:
     #    ml.change_pass(username,pwd)
     user_data = db[email]
     user_data['password'] = md5(pwd)
     db[email] = user_data
-    print pwd
     flash(u'La vostra contrasenya s\'ha actualitzat correctament','success')
     return redirect(url_for("change_pass"))
 
