@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    form(method='POST',action='new/')
+        fieldset
+            label(for='email') Correu electrònic:
+            input#email(type='text',name='email')
+            label(for='email2') Repeteix el correu electrònic:
+            input#email2(type='text',name='email2')
+            label(for='username') Nom d'usuari:
+            input#user(type='text',name='username')
+            input#submit(class="btn btn-primary",type='submit')

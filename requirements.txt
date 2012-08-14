@@ -1,0 +1,10 @@
+Flask==0.9
+Flask-Shelve==0.1.1
+Jinja2==2.6
+Werkzeug==0.8.3
+argparse==1.2.1
+distribute==0.6.24
+pwgen==0.3
+pyjade==1.5
+validate-email==1.1
+wsgiref==0.1.2

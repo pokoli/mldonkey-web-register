@@ -1,0 +1,35 @@
+!!! 5
+html
+  head
+    title My Site - #{title}
+    link(rel='stylesheet',type='text/css',href='/static/bootstrap/css/bootstrap.min.css')
+    style
+        ul {list-style-type:none}
+        #head-container { padding-bottom: 40px}
+        #head > *{ display: inline-block; }
+  body
+  div#head-container(class="container-fluid")              
+      div#head(class="page-header span12")
+        img(src='static/img/logo.gif') 
+        h1 Accès Mula
+  div#container(class="container-fluid")              
+      if errors
+        div#errors(class="alert alert-error")
+            ul
+                for error in errors
+                    li #{error}
+      if success 
+        div#success(class="alert alert-success")
+            ul
+                for suc in success
+                    li #{suc}
+      div#links(class="span4")
+        ul(class="nav nav-pills nav-stacked")
+            li
+              a(href="new_user") Nou usuari 
+            li
+              a(href="change_password") Canvia la contrasenya
+            li
+              a(href="lost_password") Has perdut la contrasenya?
+      div#main(class="span8")
+        block content
