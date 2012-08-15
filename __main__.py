@@ -1,13 +1,25 @@
 #/usr/bin/python
 # encoding: utf-8
+import smtplib
+import hashlib
+from email.mime.text import MIMEText
 from os import urandom,environ
+
 from flask import Flask,render_template,request,redirect,url_for,flash,get_flashed_messages
 from flask.ext.shelve import get_shelve,init_app
 from pwgen import pwgen
 from validate_email import validate_email
 
 import mldonkey 
-import hashlib
+import config
+
+#Read config from config file
+SMTP_HOST=getattr(config,'SMTP_HOST','localhost')
+SMTP_PORT=getattr(config,'SMTP_PORT',25)
+SMTP_FROM=getattr(config,'SMTP_FROM','root@localhost')
+SMTP_SSL=getattr(config,'SMTP_SSL',False)
+SMTP_USERNAME=getattr(config,'SMTP_USERNAME',None)
+SMTP_PASSWORD=getattr(config,'SMTP_PASSWORD',None)
 
 def md5(string):
     """
@@ -16,6 +28,20 @@ def md5(string):
     m = hashlib.md5()
     m.update(string)
     return m.digest()
+
+def sendmail(to,msg):
+    """
+        Utilitat per enviar correus electrònics
+    """
+    s = smtplib.SMTP(SMTP_HOST,SMTP_PORT)
+    if SMTP_SSL:
+        s.ehlo()
+        s.starttls()
+    if SMTP_USERNAME and SMTP_PASSWORD:
+        s.ehlo()
+        s.login(SMTP_USERNAME,SMTP_PASSWORD)
+    s.sendmail(SMTP_FROM,to,msg.as_string())
+    s.quit()
 
 
 app = Flask(__name__)
@@ -86,7 +112,9 @@ def new():
         'username' : username,
         'password' : md5(pwd),
     } 
-    #TODO: Enviar un email al usuari
+    msg = MIMEText(" Usuari: %s \n Password: %s \n " % (username, pwd))
+    msg['Subject'] = 'Dades acces burra'
+    sendmail([request.form['email']],msg)
     flash(u'Les dades d\'accès s\'han enviat al vostre correu electrònic.','success')
     return redirect(url_for("new_user"))
 
@@ -105,7 +133,9 @@ def lost():
     user_data = db[email]
     user_data['password'] = md5(pwd)
     db[email] = user_data
-    #TODO: Enviar un email al usuari
+    msg = MIMEText(" Usuari: %s \n Password: %s \n " % (username, pwd))
+    msg['Subject'] = 'Dades acces burra'
+    sendmail([request.form['email']],msg)
     flash(u'Les dades d\'accès s\'han enviat al vostre correu electrònic.','success')
     return redirect(url_for("lost_pass"))
 
