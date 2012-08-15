@@ -20,6 +20,9 @@ SMTP_FROM=getattr(config,'SMTP_FROM','root@localhost')
 SMTP_SSL=getattr(config,'SMTP_SSL',False)
 SMTP_USERNAME=getattr(config,'SMTP_USERNAME',None)
 SMTP_PASSWORD=getattr(config,'SMTP_PASSWORD',None)
+MLDONKEY_HOST=getattr(config,'MLDONKEY_HOST','localhost')
+MLDONKEY_PORT=getattr(config,'MLDONKEY_PORT',4000)
+MLDONKEY_ENABLED=getattr(config,'MLDONKEY_ENABLED',False)
 
 def md5(string):
     """
@@ -105,8 +108,9 @@ def new():
         return redirect(url_for("new_user"))
     pwd = str(pwgen(10, no_symbols=True))
     #TODO: Provar la connexió amb MLDonkey
-    #with mldonkey.MLDonkey() as ml:
-    #    ml.new_user(request.form['username'],request.form['email'],pwd)
+    if MLDONKEY_ENABLED:
+        with mldonkey.MLDonkey(MLDONKEY_HOST,MLDONKEY_PORT) as ml:
+            ml.new_user(request.form['username'],request.form['email'],pwd)
     #Afegir el usuari a la BD (fitxer)
     db[email] = {
         'username' : username,
@@ -128,8 +132,9 @@ def lost():
     username = db[email]['username']
     pwd = pwgen(10, no_symbols=True)
     #TODO: Provar la connexió amb MLDonkey
-    #with mldonkey.MLDonkey() as ml:
-    #    ml.change_pass(username,pwd)
+    if MLDONKEY_ENABLED:
+        with mldonkey.MLDonkey(MLDONKEY_HOST,MLDONKEY_PORT) as ml:
+            ml.change_pass(username,pwd)
     user_data = db[email]
     user_data['password'] = md5(pwd)
     db[email] = user_data
@@ -155,8 +160,9 @@ def change():
         return redirect(url_for("change_pass"))
     username = db[email]['username']
     #TODO: Provar la connexió amb MLDonkey
-    #with mldonkey.MLDonkey() as ml:
-    #    ml.change_pass(username,pwd)
+    if MLDONKEY_ENABLED:
+        with mldonkey.MLDonkey(MLDONKEY_HOST,MLDONKEY_PORT) as ml:
+            ml.change_pass(username,pwd)
     user_data = db[email]
     user_data['password'] = md5(pwd)
     db[email] = user_data
